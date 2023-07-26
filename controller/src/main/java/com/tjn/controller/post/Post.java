@@ -10,9 +10,9 @@ import lombok.Data;
 public class Post {
     private long no;
     private String title;
-    private long content;
+    private String content;
     private String creatorName;
-    private long createdTime;
+    private String createdTime;
 //    private static final AtomicLong counter = new AtomicLong();
 //    private Long no;
 //    private String title;

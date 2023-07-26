@@ -5,21 +5,70 @@ package com.tjn.controller.post;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
+// 게시글 목록이 JSON으로 나오게
 @RestController
-@RequestMapping(value = "/posts")
+@RequestMapping("/posts")
 public class PostController {
-    List<Post> list = new ArrayList<>();
+    Map<Integer, Post> map = new ConcurrentHashMap<>();
+    AtomicInteger num = new AtomicInteger(0);
+
+    // post 목록 화면을 제작 post.html, post.js
+    // fetch api를 사용하여 /posts 주소를 호출한 후
+    // 배열 목록을 div(카드)로 표시한다.
+
+//    -----------------
+//    | 게시자         |
+//    | ------------- |
+//    | 제목(h3)       |
+//    | 본문(p)        |
+//    |  .....        |
+//    |  .....        |
+//    | ------------- |
+//    | 생성시간       |
+//    -----------------
+
     @GetMapping
     public List<Post> getPostList() {
-        map.put(1, Post.builder().no(1).build());
-        map.put(2, Post.builder().no(1).build());
+        int no = num.incrementAndGet();
+        map.put(1, Post.builder()
+                .no(1)
+                .creatorName("홍길동")
+                .title("1Lorem, ipsum dolor.")
+                .content("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repudiandae maiores sunt ab beatae provident? Eius non accusantium vitae dolor ipsa!")
+                .createdTime(new Date().toString())
+                .build());
+        map.put(2, Post.builder()
+                .no(2)
+                .creatorName("김철수")
+                .title("2Lorem, ipsum dolor.")
+                .content("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repudiandae maiores sunt ab beatae provident? Eius non accusantium vitae dolor ipsa!")
+                .createdTime(new Date().toString())
+                .build());
 
         var list = new ArrayList<>(map.values());
+        // 람다식(lambda expression)
+        // 식이 1개인 함수식;
+        // 매개변수 영역과 함수 본체를 화살표로 구분함
+        // 함수 본체의 수식 값이 반환 값
+        list.sort((a,b)-> (int)(b.getNo() - a.getNo()));
+
+        return list;
+    }
+
+    // title, content 필수 속성
+    // creatorName: 서버에서
+//    @PostMapping
+//    public
+}
+
         // 람다식(lambda expression)
         // 식이 1개인 함수식;
         // 매개변수 영역과 함수 본체를 화살표로 구분함
@@ -36,8 +85,8 @@ public class PostController {
 //                .createdTime(new Date().getTime())
 //                .build());
 //        return list;
-        return list;
-    }
+//        return list;
+//    }
 //    private final ConcurrentHashMap<Long, Post> posts = new ConcurrentHashMap<>();
 //    private final AtomicLong deletedCounter = new AtomicLong();
 //
@@ -113,5 +162,4 @@ public class PostController {
 //        post1.setCreatorName("작성자1");
 //        addPost(post1);
 //    }
-}
 
