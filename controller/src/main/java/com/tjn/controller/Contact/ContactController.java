@@ -87,17 +87,23 @@ public class ContactController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(res);
         }
 
+
+
         // 맵에 객체 추가
         map.put(contact.getEmail(), contact);
 
         // 응답 객체 생성
         Map<String, Object> res = new HashMap<>();
-        res.put("data", contact);
+        res.put("data", map.get(contact.getEmail()));
         res.put("message", "created");
 
         // HTTP Status Code: 201 Created
         // 리소스가 정상적으로 생성되었음.
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
+//    @PostMapping("/deleteContact")
+//    public void deleteContact(@RequestBody Contact contact) {
+//        contacts.removeIf(c => { c.getName().equals(contact.getName()) && c.getEmail().equals(contact.getEmail()));
+//    }
 
 }
