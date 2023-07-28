@@ -14,6 +14,7 @@ public class Contact  {
     private String email;
     private String name;
     private String phone;
+    private String image;
 //    @Override
 //    public int compareTo(Object o){
 //        Contact c = (Contact) o;

@@ -112,6 +112,18 @@ public class PostController {
 //        return ResponseEntity.status(HttpStatus.CREATED).build();
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
+    @DeleteMapping(value = "/{no}")
+        public ResponseEntity<Object> removePosts(@PathVariable("no") long no) {
+
+//        Map<Long, Post> map = new ConcurrentHashMap<>();
+
+            if (map.get(no) == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+            map.remove(no);
+            return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }
 
 

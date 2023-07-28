@@ -17,6 +17,7 @@ public class Post {
     private String content;
     private String creatorName;
     private String createdTime;
+    private String image;
 
 
 }

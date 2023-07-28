@@ -21,8 +21,8 @@ public class ContactController {
     public List<Contact> getContactList() {
 //        int no = num.incrementAndGet();
 
-        map.put("asdf@gamil.com", Contact.builder().name("홍길동").phone("010-7271-1234").email("asdf@gamil.com").build());
-        map.put("qwerr@naver.com", Contact.builder().name("김민수").phone("010-5444-1234").email("qwerr@naver.com").build());
+//        map.put("asdf@gamil.com", Contact.builder().name("홍길동").phone("010-7271-1234").email("asdf@gamil.com").build());
+//        map.put("qwerr@naver.com", Contact.builder().name("김민수").phone("010-5444-1234").email("qwerr@naver.com").build());
         var list = new ArrayList<>(map.values());
 //        list.sort((a, b)-> b.getId() - a.getId());
         list.sort(Comparator.comparing(Contact::getName));
@@ -101,9 +101,26 @@ public class ContactController {
         // 리소스가 정상적으로 생성되었음.
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
-//    @PostMapping("/deleteContact")
-//    public void deleteContact(@RequestBody Contact contact) {
-//        contacts.removeIf(c => { c.getName().equals(contact.getName()) && c.getEmail().equals(contact.getEmail()));
-//    }
 
+//    DELETE /contacts/{email}
+//         : Path(경로)Variable(변수)
+//    DELETE /contacts/mertake7@naver.com
+    @DeleteMapping(value = "/{email}")
+    // @PathVariable("email") : 경로 문자열(email)과 변수명 String email이 통일하면 안 써도 된다
+    public ResponseEntity<Object> removeContact(@PathVariable("email") String email) {
+        System.out.println(email);
+
+        // 해당 키(key)의 데이터가 없으면
+        if(map.get(email) == null) {
+            // 404: NOT FOUND, 해당 경로에 리소스가 없다.
+            // DELETE /contacts/mertake7@naver.com
+            // Response Status Code : 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        // 객체(리소스) 삭제
+        map.remove(email);
+        return ResponseEntity.status(HttpStatus.OK).build();
+
+    }
 }
