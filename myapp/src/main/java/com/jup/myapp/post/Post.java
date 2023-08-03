@@ -17,11 +17,11 @@ public class Post {
     // 1, 2, 3...
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long no;
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String title;
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String content;
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String creatorName;
 
     // created time bigint not null,
@@ -32,8 +32,8 @@ public class Post {
     // 데이터베이스에 NULL을 널고 싶으면 Class 파일을 써야함
     @Column(nullable = false)
     private long createdTime;
-    @Column(columnDefinition = "LONGTEXT")
-    private String image;
+//    @Column(columnDefinition = "LONGTEXT")
+//    private String image;
 
 
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /// GET /posts
@@ -20,7 +21,7 @@ public class PostController {
     // HashMap -> ConcurrentHashMap
     // Integer -> AtomicInteger
 //    Map<Long, Post> map = new ConcurrentHashMap<>();
-//    AtomicLong num = new AtomicLong(0);
+    AtomicLong num = new AtomicLong(0);
 
     // post 목록 화면을 제작 post.html, post.js
     // fetch api를 사용하여 /posts 주소를 호출한 후
@@ -38,7 +39,7 @@ public class PostController {
 //    -----------------
 
     @Autowired
-    PostRepository repo;
+    PostRepository repost;
 
     @GetMapping
     public List<Post> getPostList() {
@@ -61,7 +62,7 @@ public class PostController {
 //                        .createdTime(new Date().getTime())
 //                        .build());
 
-        List<Post> list = repo.findAll(Sort.by("no").ascending());
+        List<Post> list = repost.findAllByOrderByNo();
 //        var list = new ArrayList<>(map.values());
 //        // 람다식(lambda expression)
 //        // 식이 1개인 함수식;
@@ -88,15 +89,16 @@ public class PostController {
     public ResponseEntity<Map<String, Object>> addPost(@RequestBody Post post) {
 //     1. 입력값 검증(title, content)
 
+        long no = num.incrementAndGet();
 //      -> 입력값 오류(빈 값)가 있으면 400 에러 띄움
         if (post.getTitle() == null || post.getContent() == null || post.getContent().isEmpty() || post.getTitle().isEmpty()) {
             Map<String, Object> response = new HashMap<>();
             response.put("data", null);
-            response.put("message", "[title] and [content] is Required Field");
+            response.put("message", "[title] and [content] field is required");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-//        if(Post.getn() != null && repo.findById(post.getNo()).isPresent()) {
+//        if(Post.getn() != null && repostst.findById(post.getNo()).isPresent()) {
 //            Map<String, Object> res = new HashMap<>();
 //            res.put("data", null);
 //            res.put("message", "동일한 정보가 이미 존재");
@@ -111,12 +113,12 @@ public class PostController {
 //        post.setNo(no);
 
 //     3. 번호(no), 시간값(createdTime) 게시자이름(creatorName) 요청 객체에 설정
-        post.setCreatorName("Dodo");
+        post.setCreatorName("Park JaeUk");
         post.setCreatedTime(new Date().getTime());
 
-        repo.save(post);
+        Post savedPost = repost.save(post);
 
-        Optional<Post> savedPost = repo.findById(post.getContent());
+//        Optional<Post> savedPost = repost.findById(post.getContent());
 
 //     4. 맵에 추가
 //        map.put(no, post);
@@ -128,15 +130,85 @@ public class PostController {
 //        res.put("data", map.get(no));
 //        res.put("message", "created");
 
+        if(savedPost != null) {
+            Map<String, Object> res = new HashMap<>();
+            res.put("data", savedPost);
+            res.put("message", "created");
+
+            // HTTP Status Code: 201 Created
+            // 리소스가 정상적으로 생성되었음.
+            return ResponseEntity.status(HttpStatus.CREATED).body(res);
+        }
+
 //        System.out.println(ResponseEntity.status(HttpStatus.CREATED).body(res));
 //        return ResponseEntity.status(HttpStatus.CREATED).build();
 //        return ResponseEntity.status(HttpStatus.CREATED).body(res);
 
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping(value = "/{no}")
+    public ResponseEntity removePost(@PathVariable Long no) {
+        System.out.println(no);
+
+        if(!repost.findById(no).isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        repost.deleteById(no);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }
 
-
+//@RestController
+//@RequestMapping(value = "/posts")
+//public class PostController {
+//    List<Post> list = new ArrayList<>();
+//    AtomicInteger num = new AtomicInteger(0);
+//    @Autowired
+//    PostRepository repo;
+//    @GetMapping
+//    public List<Post> getList() {
+//        List<Post> list = repo.findAll(Sort.by("no").ascending());
+//        return list;
+//    }
+//    @PostMapping
+//    public ResponseEntity<Map<String, Object>> addPost(@RequestBody Post post) {
+//        int no = num.incrementAndGet();
+//        if (post.getTitle() == null || post.getTitle().isEmpty()) {
+//            Map<String, Object> res = new HashMap<>();
+//            res.put("data", null);
+//            res.put("message", "[title] field is required");
+//            return ResponseEntity
+//                    .status(HttpStatus.BAD_REQUEST)
+//                    .body(res);
+//        }
+//        if (post.getContent() == null || post.getContent().isEmpty()) {
+//            Map<String, Object> res = new HashMap<>();
+//            res.put("data", null);
+//            res.put("message", "[content] field is required");
+//            return ResponseEntity
+//                    .status(HttpStatus.BAD_REQUEST)
+//                    .body(res);
+//        }
+//        post.setCreatorName("JAEUK");
+//        post.setCreatedTime(new Date().getTime());
+////        post.setNo(no);
+////        map.put(no, post);
+//        repo.save(post);
+//        return ResponseEntity.ok().build();
+//    }
+//    @DeleteMapping(value = "/{no}")
+//    public ResponseEntity DeletePost(@PathVariable("no") int no) {
+//        //Map<String, Post> map = new ConcurrentHashMap<>();
+//        if (list.get(no) == null) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//        repo.deleteById(String.valueOf(no));
+//        return ResponseEntity.status(HttpStatus.OK).build();
+//    }
+//}
 
 
 //package com.tjn.controller.post;
