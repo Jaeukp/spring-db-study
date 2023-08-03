@@ -7,10 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@AllArgsConstructor
 @Builder
+@Entity
 public class Profile  {
 
     @Id
@@ -22,5 +22,6 @@ public class Profile  {
 
     // 관계 맵핑
     @OneToOne
+    //    profile_id 컬럼이 FK로 생성됨
     private Login login;
 }
