@@ -11,14 +11,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Builder
-public class Profile {
+public class Profile  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(nullable = false)
     private String nickname;
     private String email;
 
-    @OneToOne(mappedBy = "profile")
+    // 관계 맵핑
+    @OneToOne
     private Login login;
 }
